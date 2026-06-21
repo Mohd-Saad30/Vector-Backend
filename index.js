@@ -26,6 +26,7 @@ app.use(
     origin: ["http://localhost:5173",
       "http://localhost:5174",
       "https://vector-frontend-ruddy.vercel.app",
+      "https://vector-frontend-ruddy.vercel.app/"
 
     ],
     credentials: true,
