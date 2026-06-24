@@ -20,13 +20,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// CORS Configuration 
+
 app.use(
   cors({
     origin: ["http://localhost:5173",
       "http://localhost:5174",
-      "https://vector-frontend-ruddy.vercel.app",
-      "https://vector-frontend-ruddy.vercel.app/"
+      "http://vector-frontend-ruddy.vercel.app",
+      "https://vector-frontend-ruddy.vercel.app"
+
 
     ],
     credentials: true,
@@ -60,7 +61,5 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`
 Server is running at: http://localhost:${PORT}
-  
- 
   `);
 });
