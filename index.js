@@ -1,50 +1,43 @@
 import express from "express"
-const app = express();
 import { connect } from "./config/database.js"
 import productRoutes from "./routes/productRoutes.js"
-
 import cors from "cors"
-
 import dotenv from "dotenv"
-
-
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
+const app = express();
 
-connect();
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://vector-frontend-ruddy.vercel.app"
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://vector-frontend-ruddy.vercel.app" // REMOVED THE TRAILING SLASH HERE
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked for origin: ${origin}`));
+      }
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Explicitly allow preflight methods
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
+// Handle preflight for all routes (Express 5 compatible wildcard)
+app.options("/{*path}", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-// CORS Configuration 
-app.use(
-  cors({
-    origin: ["*"],
-    
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-
-  })
-);
-
-
+connect();
 
 app.use("/api/v1/products", productRoutes);
 
